@@ -32,7 +32,7 @@ const Main = ({ fetchUser, currentUser }) => {
         component={FeedScreen}
       />
       <Tab.Screen
-        name="AddContainer"
+        name="Add Pic"
         listeners={({ navigation }) => ({
           tabPress: (event) => {
             event.preventDefault();

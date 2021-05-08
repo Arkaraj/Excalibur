@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Button,
-  Image,
-} from "react-native";
+import { StyleSheet, Text, View, Button, Image } from "react-native";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 
-export default function Add() {
+export default function Add({ navigation }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
   const [camera, setCamera] = useState(null);
@@ -23,16 +16,14 @@ export default function Add() {
       setHasCameraPermission(camera.status === "granted");
 
       const gallery = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (gallery.status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
-      }
+      setHasGalleryPermission(gallery.status === "granted");
     })();
   }, []);
 
-  if (hasCameraPermission === null) {
+  if (hasCameraPermission === null && hasGalleryPermission) {
     return <View />;
   }
-  if (hasCameraPermission === false) {
+  if (hasCameraPermission === false && hasGalleryPermission === false) {
     return <Text>No access to camera</Text>;
   }
 
@@ -40,6 +31,21 @@ export default function Add() {
     if (camera) {
       const data = await camera.takePictureAsync(null);
       setImage(data.uri);
+    }
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
     }
   };
 
@@ -67,6 +73,16 @@ export default function Add() {
           style={styles.button}
           onPress={takePicture}
           title="Take Picture"
+        ></Button>
+        <Button
+          style={styles.button}
+          onPress={pickImage}
+          title="Pick Image from Gallery"
+        ></Button>
+        <Button
+          style={styles.button}
+          onPress={() => navigation.navigate("Save", { image })}
+          title="Save"
         ></Button>
       </View>
       {image && <Image source={{ uri: image }} style={{ flex: 1 }} />}

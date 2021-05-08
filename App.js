@@ -8,6 +8,7 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import Main from "./components/Main";
 import AddScreen from "./components/Add";
+import SaveScreen from "./components/Save";
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,7 @@ export default function App() {
                 options={{ headerShown: false }}
               />
               <Stack.Screen name="Add" component={AddScreen} />
+              <Stack.Screen name="Save" component={SaveScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </Provider>
