@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import firebase from "firebase";
@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Main from "./components/Main";
+import AddScreen from "./components/Add";
 
 const Stack = createStackNavigator();
 
@@ -42,7 +43,16 @@ export default function App() {
     if (loggedIn) {
       return (
         <Provider store={store}>
-          <Main />
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="Main">
+              <Stack.Screen
+                name="Main"
+                component={Main}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="Add" component={AddScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
         </Provider>
       );
     } else {
@@ -76,12 +86,3 @@ export default function App() {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
