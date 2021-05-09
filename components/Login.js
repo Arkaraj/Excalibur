@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Button, TextInput } from "react-native";
+import { StyleSheet, View, Button, TextInput } from "react-native";
 import firebase from "firebase";
 
 // Trying out class method
@@ -12,7 +12,7 @@ export class Login extends Component {
       password: "",
     };
 
-    this.signUp = this.signUp.bind(this);
+    this.signIn = this.signIn.bind(this);
   }
 
   signIn() {
@@ -31,7 +31,7 @@ export class Login extends Component {
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <TextInput
           placeholder="email"
           onChangeText={(email) => this.setState({ email })}
@@ -47,5 +47,12 @@ export class Login extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    margin: 20,
+  },
+});
 
 export default Login;

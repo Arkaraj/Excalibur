@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Button, TextInput } from "react-native";
+import { StyleSheet, View, Button, TextInput } from "react-native";
 import firebase from "firebase";
 
 // Trying out class method
@@ -39,7 +39,7 @@ export class Register extends Component {
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <TextInput
           placeholder="name"
           onChangeText={(name) => this.setState({ name })}
@@ -59,5 +59,12 @@ export class Register extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    margin: 20,
+  },
+});
 
 export default Register;
