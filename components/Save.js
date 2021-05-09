@@ -7,7 +7,7 @@ require("firebase/firebase-storage");
 const Save = ({ navigation, route }) => {
   const [caption, setCaption] = React.useState("");
 
-  const uploadImageToFirebase = async () => {
+  const uploadImageToFirestore = async () => {
     const path = `post/${
       firebase.auth().currentUser.uid
     }/${Math.random().toString(36)}`;
@@ -51,7 +51,7 @@ const Save = ({ navigation, route }) => {
       });
   };
 
-  console.log(route.params.image);
+  // console.log(route.params.image);
   return (
     <View style={{ flex: 1 }}>
       <Image source={{ uri: route.params.image }} style={{ flex: 1 }} />
@@ -59,7 +59,7 @@ const Save = ({ navigation, route }) => {
         placeholder="Caption..."
         onChangeText={(caption) => setCaption(caption)}
       />
-      <Button title="Save" onPress={uploadImageToFirebase} />
+      <Button title="Save" onPress={uploadImageToFirestore} />
     </View>
   );
 };
