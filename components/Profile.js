@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Image, FlatList } from "react-native";
+import { StyleSheet, View, Text, Image, FlatList, Button } from "react-native";
+
 import firebase from "firebase";
 require("firebase/firestore");
-
-// Redux Connecting
 import { connect } from "react-redux";
 
-const Profile = ({ navigation, currentUser, posts, route }) => {
-  const [user, setUser] = useState([]);
-  const [userPost, setUserPost] = useState(null);
+function Profile({ currentUser, posts, route, following: follow }) {
+  const [userPosts, setUserPosts] = useState([]);
+  const [user, setUser] = useState(null);
+  const [following, setFollowing] = useState(false);
 
   useEffect(() => {
     if (route.params.uid === firebase.auth().currentUser.uid) {
-      // Set Info from Redux
-      console.log(route.params.uid);
       setUser(currentUser);
-      setUserPost(posts);
+      setUserPosts(posts);
     } else {
       firebase
         .firestore()
@@ -26,10 +24,9 @@ const Profile = ({ navigation, currentUser, posts, route }) => {
           if (snapshot.exists) {
             setUser(snapshot.data());
           } else {
-            console.log("User does not exist");
+            console.log("does not exist");
           }
         });
-
       firebase
         .firestore()
         .collection("posts")
@@ -43,36 +40,77 @@ const Profile = ({ navigation, currentUser, posts, route }) => {
             const id = doc.id;
             return { id, ...data };
           });
-
-          setUserPost(posts);
+          setUserPosts(posts);
         });
     }
-  }, [route.params.uid]);
 
+    if (follow.includes(route.params.uid)) {
+      setFollowing(true);
+    } else {
+      setFollowing(false);
+    }
+  }, [route.params.uid, follow]);
+
+  const onFollow = () => {
+    firebase
+      .firestore()
+      .collection("following")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userFollowing")
+      .doc(route.params.uid)
+      .set({});
+  };
+  const onUnfollow = () => {
+    firebase
+      .firestore()
+      .collection("following")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userFollowing")
+      .doc(route.params.uid)
+      .delete();
+  };
+
+  const onLogout = () => {
+    firebase.auth().signOut();
+  };
+
+  if (user === null) {
+    return <View />;
+  }
   return (
     <View style={styles.container}>
       <View style={styles.containerInfo}>
-        <Text>{user && user.name}'s Profile</Text>
-        <Text>{user && user.email}</Text>
+        <Text>{user.name}</Text>
+        <Text>{user.email}</Text>
+
+        {route.params.uid !== firebase.auth().currentUser.uid ? (
+          <View>
+            {following ? (
+              <Button title="Following" onPress={() => onUnfollow()} />
+            ) : (
+              <Button title="Follow" onPress={() => onFollow()} />
+            )}
+          </View>
+        ) : (
+          <Button title="Logout" onPress={() => onLogout()} />
+        )}
       </View>
 
-      {userPost && (
-        <View style={styles.containerGallery}>
-          <FlatList
-            numColumns={3}
-            horizontal={false}
-            data={userPost}
-            renderItem={({ item }) => (
-              <View style={styles.imageContainer}>
-                <Image style={styles.image} source={{ uri: item.snapshot }} />
-              </View>
-            )}
-          />
-        </View>
-      )}
+      <View style={styles.containerGallery}>
+        <FlatList
+          numColumns={3}
+          horizontal={false}
+          data={userPosts}
+          renderItem={({ item }) => (
+            <View style={styles.containerImage}>
+              <Image style={styles.image} source={{ uri: item.snapshot }} />
+            </View>
+          )}
+        />
+      </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -84,7 +122,7 @@ const styles = StyleSheet.create({
   containerGallery: {
     flex: 1,
   },
-  imageContainer: {
+  containerImage: {
     flex: 1 / 3,
   },
   image: {
@@ -92,10 +130,9 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1,
   },
 });
-
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   posts: store.userState.posts,
+  following: store.userState.following,
 });
-
 export default connect(mapStateToProps, null)(Profile);

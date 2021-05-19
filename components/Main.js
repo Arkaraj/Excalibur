@@ -3,7 +3,11 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { StyleSheet, Platform, StatusBar as SB } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchUser, fetchUserPosts } from "../redux/actions/index";
+import {
+  fetchUser,
+  fetchUserPosts,
+  fetchUserFollowing,
+} from "../redux/actions/index";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import FeedScreen from "./Feed";
@@ -17,10 +21,16 @@ const EmptyScreen = () => {
   return null;
 };
 
-const Main = ({ fetchUser, fetchUserPosts, currentUser }) => {
+const Main = ({
+  fetchUser,
+  fetchUserPosts,
+  fetchUserFollowing,
+  currentUser,
+}) => {
   React.useEffect(() => {
     fetchUser();
     fetchUserPosts();
+    fetchUserFollowing();
   }, []);
 
   return (
@@ -100,6 +110,9 @@ const mapStateToProps = (store) => ({
 });
 
 const mapDispatchProps = (dispatch) =>
-  bindActionCreators({ fetchUser, fetchUserPosts }, dispatch);
+  bindActionCreators(
+    { fetchUser, fetchUserPosts, fetchUserFollowing },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapDispatchProps)(Main);
