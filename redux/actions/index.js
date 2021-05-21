@@ -2,6 +2,7 @@ import {
   user_state_change,
   user_posts_state_change,
   user_following_state_change,
+  users_posts_state_change,
   users_data_state_change,
 } from "../constants/index";
 import firebase from "firebase";
@@ -59,11 +60,14 @@ export const fetchUserFollowing = () => {
         });
 
         dispatch({ type: user_following_state_change, following });
+        for (let i = 0; i < following.length; i++) {
+          dispatch(fetchUsersData(following[i], true));
+        }
       });
   };
 };
 
-export const fetchUserData = (uid) => {
+export const fetchUserData = (uid, getPosts) => {
   return (dispatch, getState) => {
     const found = getState().usersState.users.some((el) => el.uid === uid);
 
@@ -77,16 +81,23 @@ export const fetchUserData = (uid) => {
           if (snapshot.exists) {
             let user = snapshot.data();
             user.uid = snapshot.id;
+
+            // for (let i = 0; i < posts.length; i++) {
+            //   dispatch(fetchUsersFollowingLikes(uid, posts[i].id));
+            // }
+
             dispatch({ type: users_data_state_change, user });
           } else {
             console.log("User does not exist");
+          }
+          if (getPosts) {
+            dispatch(fetchUserFollowingPosts(uid));
           }
         });
     }
   };
 };
 
-// Needs fixing.. work on progress
 export const fetchUserFollowingPosts = (uid) => {
   return (dispatch, getState) => {
     firebase
@@ -97,13 +108,17 @@ export const fetchUserFollowingPosts = (uid) => {
       .orderBy("creationDate", "asc")
       .get()
       .then((snapshot) => {
+        const uid = snapshot.query.EP.path.segments[1];
+        console.log({ snapshot, uid });
+        const user = getState().usersState.users.find((el) => el.uid === uid);
+
         let posts = snapshot.docs.map((doc) => {
           const data = doc.data();
           const id = doc.id;
-          return { id, ...data };
+          return { id, ...data, user };
         });
 
-        dispatch({ type: user_posts_state_change, posts });
+        dispatch({ type: users_posts_state_change, uid, posts });
       });
   };
 };
