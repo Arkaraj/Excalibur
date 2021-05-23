@@ -11,30 +11,44 @@ function Feed({
   usersLoaded,
   following,
   users,
+  feed,
   route,
 }) {
   // const [userPosts, setUserPosts] = useState([]);
   const [posts, setPosts] = useState(null);
 
   useEffect(() => {
-    let posts = [];
-
-    if (usersLoaded == following.length) {
-      for (let i = 0; i < following.length; i++) {
-        const user = users.find((el) => el.uid === following[i]);
-
-        if (user != undefined) {
-          posts = [...posts, ...user.posts];
-        }
-      }
-
-      posts.sort((curr, next) => {
+    if (usersLoaded == following.length && following.length !== 0) {
+      feed.sort((curr, next) => {
         return curr.creationDate - next.creationDate;
       });
 
-      setPosts(posts);
+      setPosts(feed);
     }
-  }, [usersLoaded]);
+  }, [usersLoaded, feed]);
+
+  const onLikePress = (uid, postId) => {
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(uid)
+      .collection("userPosts")
+      .doc(postId)
+      .collection("likes")
+      .doc(firebase.auth().currentUser.uid)
+      .set({});
+  };
+  const onDisLikePress = (uid, postId) => {
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(uid)
+      .collection("userPosts")
+      .doc(postId)
+      .collection("likes")
+      .doc(firebase.auth().currentUser.uid)
+      .delete();
+  };
 
   return (
     <View style={styles.container}>
@@ -52,6 +66,18 @@ function Feed({
             <View style={styles.containerImage}>
               <Text style={styles.container}>{item.user.name}</Text>
               <Image style={styles.image} source={{ uri: item.snapshot }} />
+
+              {item.currentUserLike ? (
+                <Button
+                  title="Dislike"
+                  onPress={() => onDisLikePress(item.user.uid, item.id)}
+                />
+              ) : (
+                <Button
+                  title="Like"
+                  onPress={() => onLikePress(item.user.uid, item.id)}
+                />
+              )}
 
               <Text
                 onPress={() =>
@@ -92,7 +118,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   following: store.userState.following,
-  users: store.userState.users,
+  feed: store.usersState.feed,
   usersLoaded: store.userState.usersLoaded,
 });
 

@@ -4,6 +4,7 @@ import {
   user_following_state_change,
   users_posts_state_change,
   users_data_state_change,
+  users_likes_state_change,
   clear_data,
 } from "../constants/index";
 import firebase from "firebase";
@@ -119,7 +120,30 @@ export const fetchUserFollowingPosts = (uid) => {
           return { id, ...data, user };
         });
 
+        for (let i = 0; i < posts.length; i++) {
+          dispatch(fetchUserFollowingLikes(uid, posts[i].id));
+        }
         dispatch({ type: users_posts_state_change, uid, posts });
+      });
+  };
+};
+export const fetchUserFollowingLikes = (uid, postId) => {
+  return (dispatch, getState) => {
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(uid)
+      .collection("userPosts")
+      .doc(postId)
+      .collection("likes")
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then((snapshot) => {
+        const postId = snapshot.ZE.path.segments[3];
+
+        let currentUserLike = snapshot.exists; // ?true:false
+
+        dispatch({ type: users_likes_state_change, postId, currentUserLike });
       });
   };
 };

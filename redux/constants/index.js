@@ -5,4 +5,5 @@ export const user_following_state_change = "user_following_state_change";
 
 export const users_data_state_change = "users_data_state_change";
 export const users_posts_state_change = "users_posts_state_change";
+export const users_likes_state_change = "users_likes_state_change";
 export const clear_data = "clear_data";
