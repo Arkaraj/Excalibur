@@ -4,6 +4,7 @@ import {
   user_following_state_change,
   users_posts_state_change,
   users_data_state_change,
+  clear_data,
 } from "../constants/index";
 import firebase from "firebase";
 
@@ -61,7 +62,7 @@ export const fetchUserFollowing = () => {
 
         dispatch({ type: user_following_state_change, following });
         for (let i = 0; i < following.length; i++) {
-          dispatch(fetchUsersData(following[i], true));
+          dispatch(fetchUserData(following[i], true));
         }
       });
   };
@@ -120,5 +121,11 @@ export const fetchUserFollowingPosts = (uid) => {
 
         dispatch({ type: users_posts_state_change, uid, posts });
       });
+  };
+};
+
+export const clearData = () => {
+  return (dispatch) => {
+    dispatch({ type: clear_data });
   };
 };

@@ -16,4 +16,18 @@ A Social media app made with React Native, Redux, Basically an instagram mini cl
 npm i
 ```
 
+Add a secret.js file,
+
+```js
+export const firebaseConfig = {
+  apiKey: " ",
+  authDomain: " ",
+  projectId: " ",
+  storageBucket: " ",
+  messagingSenderId: " ",
+  appId: " ",
+  measurementId: " ",
+};
+```
+
 Create a secret.js file in root directory (.env is recommended), add the firebase configuration credentials there.

@@ -5,8 +5,15 @@ import firebase from "firebase";
 require("firebase/firestore");
 import { connect } from "react-redux";
 
-function Feed({ currentUser, usersLoaded, following, users, route }) {
-  const [userPosts, setUserPosts] = useState([]);
+function Feed({
+  currentUser,
+  navigation,
+  usersLoaded,
+  following,
+  users,
+  route,
+}) {
+  // const [userPosts, setUserPosts] = useState([]);
   const [posts, setPosts] = useState(null);
 
   useEffect(() => {
@@ -45,6 +52,17 @@ function Feed({ currentUser, usersLoaded, following, users, route }) {
             <View style={styles.containerImage}>
               <Text style={styles.container}>{item.user.name}</Text>
               <Image style={styles.image} source={{ uri: item.snapshot }} />
+
+              <Text
+                onPress={() =>
+                  navigation.navigate("Comment", {
+                    postId: item.id,
+                    userId: item.user.uid,
+                  })
+                }
+              >
+                View Comments
+              </Text>
             </View>
           )}
         />

@@ -2,6 +2,7 @@ import {
   user_state_change,
   user_posts_state_change,
   user_following_state_change,
+  clear_data,
 } from "../constants/index";
 // Like a constructor
 const initialState = {
@@ -26,6 +27,10 @@ export const user = (state = initialState, action) => {
       return {
         ...state,
         following: action.following,
+      };
+    case clear_data:
+      return {
+        initialState,
       };
     default:
       return state;
