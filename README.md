@@ -2,6 +2,8 @@
 
 A Social media app made with React Native, Redux, Basically an instagram mini clone
 
+Run on Expo
+
 🚧🚧 Work on Progress (1-2 commit more to go...) 🚧🚧
 
 ## Tech Stack

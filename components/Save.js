@@ -44,6 +44,7 @@ const Save = ({ navigation, route }) => {
       .add({
         snapshot,
         caption,
+        likesCount: 0,
         creationDate: firebase.firestore.FieldValue.serverTimestamp(),
       })
       .then(() => {
