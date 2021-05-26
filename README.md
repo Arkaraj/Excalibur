@@ -22,6 +22,13 @@ Run on Expo
 - Comment on User's Pictures
 - Like/Dislike User's Posted Pictures
 
+# Things Need To Be Done
+
+- Fix Bugs & Testing Few Features
+- Firebase deploy
+- Full UI/UX design, refactoring code
+- Maybe a Chat Feature with other users
+
 ## To Run it Locally
 
 ```sh

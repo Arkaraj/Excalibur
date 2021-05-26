@@ -4,7 +4,7 @@ import { users } from "./users";
 
 const Reducers = combineReducers({
   userState: user,
-  userState: users,
+  usersState: users,
 });
 
 export default Reducers;

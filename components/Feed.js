@@ -22,6 +22,7 @@ function Feed({
       feed.sort((curr, next) => {
         return curr.creationDate - next.creationDate;
       });
+      // console.log(feed);
 
       setPosts(feed);
     }
@@ -52,46 +53,46 @@ function Feed({
 
   return (
     <View style={styles.container}>
-      <View style={styles.containerInfo}>
-        <Text>{user.name}</Text>
-        <Text>{user.email}</Text>
-      </View>
-
       <View style={styles.containerGallery}>
-        <FlatList
-          numColumns={1}
-          horizontal={false}
-          data={posts}
-          renderItem={({ item }) => (
-            <View style={styles.containerImage}>
-              <Text style={styles.container}>{item.user.name}</Text>
-              <Image style={styles.image} source={{ uri: item.snapshot }} />
+        {/* <Text>{JSON.stringify(x, null, 2)}</Text> */}
+        {posts ? (
+          <FlatList
+            numColumns={1}
+            horizontal={false}
+            data={posts}
+            renderItem={({ item }) => (
+              <View style={styles.containerImage}>
+                <Text style={styles.container}>{item.user.name}</Text>
+                <Image style={styles.image} source={{ uri: item.snapshot }} />
 
-              {item.currentUserLike ? (
-                <Button
-                  title="Dislike"
-                  onPress={() => onDisLikePress(item.user.uid, item.id)}
-                />
-              ) : (
-                <Button
-                  title="Like"
-                  onPress={() => onLikePress(item.user.uid, item.id)}
-                />
-              )}
+                {item.currentUserLike ? (
+                  <Button
+                    title="Dislike"
+                    onPress={() => onDisLikePress(item.user.uid, item.id)}
+                  />
+                ) : (
+                  <Button
+                    title="Like"
+                    onPress={() => onLikePress(item.user.uid, item.id)}
+                  />
+                )}
 
-              <Text
-                onPress={() =>
-                  navigation.navigate("Comment", {
-                    postId: item.id,
-                    userId: item.user.uid,
-                  })
-                }
-              >
-                View Comments
-              </Text>
-            </View>
-          )}
-        />
+                <Text
+                  onPress={() =>
+                    navigation.navigate("Comment", {
+                      postId: item.id,
+                      userId: item.user.uid,
+                    })
+                  }
+                >
+                  View Comments
+                </Text>
+              </View>
+            )}
+          />
+        ) : (
+          <Text>Loading...</Text>
+        )}
       </View>
     </View>
   );
@@ -119,7 +120,7 @@ const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   following: store.userState.following,
   feed: store.usersState.feed,
-  usersLoaded: store.userState.usersLoaded,
+  usersLoaded: store.usersState.usersLoaded,
 });
 
 export default connect(mapStateToProps, null)(Feed);

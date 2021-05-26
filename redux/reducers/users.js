@@ -2,6 +2,7 @@ import {
   users_data_state_change,
   users_likes_state_change,
   users_posts_state_change,
+  clear_data,
 } from "../constants/index";
 // Like a constructor
 const initialState = {

@@ -110,8 +110,10 @@ export const fetchUserFollowingPosts = (uid) => {
       .orderBy("creationDate", "asc")
       .get()
       .then((snapshot) => {
-        const uid = snapshot.query.EP.path.segments[1];
-        console.log({ snapshot, uid });
+        // const uid = snapshot.query.EP.path.segments[1];
+        const uid = snapshot.docs[0].ref.path.split("/")[1];
+        console.log(uid);
+        // console.log({ snapshot, uid });
         const user = getState().usersState.users.find((el) => el.uid === uid);
 
         let posts = snapshot.docs.map((doc) => {
@@ -139,7 +141,9 @@ export const fetchUserFollowingLikes = (uid, postId) => {
       .doc(firebase.auth().currentUser.uid)
       .get()
       .then((snapshot) => {
-        const postId = snapshot.ZE.path.segments[3];
+        // const postId = snapshot.ZE.path.segments[3];
+        console.log(snapshot.ref.path.split("/")[3]);
+        const postId = snapshot.ref.path.split("/")[3];
 
         let currentUserLike = snapshot.exists; // ?true:false
 
